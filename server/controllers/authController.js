@@ -1,8 +1,8 @@
 import vine, { errors } from "@vinejs/vine";
 import bcrypt from "bcryptjs";
-import prisma from "../DB/db.config.js";
-import { registerSchema, loginSchema } from "../validations/authValidation.js";
 import jwt from "jsonwebtoken";
+import prisma from "../DB/db.config.js";
+import { loginSchema, registerSchema } from "../validations/authValidation.js";
 
 
 class authController{
@@ -70,7 +70,7 @@ class authController{
                 where: {
                     email: payload.email
                 }
-            })
+            });
 // console.log("Checking Prisma Query Result for User:", findUser);
 
             if (findUser) {
@@ -85,12 +85,12 @@ class authController{
                     email: findUser.email
                     
                 }
-                const token = jwt.sign(payloadData, process.env.SECRET, { expiresIn: "1d" });
+                const token = jwt.sign(payloadData, process.env.JWT_SECRET, { expiresIn: "365d" });
 
-                return res.json({ status:200, message: "User logged in successfully", user: findUser });
+                return res.json({ status:200, message: "User logged in successfully", access_token:`Bearer ${token}` });
             }
 
-            return res.json({ status:400, message: "User not found" });
+            return res.json({ status:400, message: "User not found"});
     
         } catch (error) {
             if (error instanceof errors.E_VALIDATION_ERROR) {
