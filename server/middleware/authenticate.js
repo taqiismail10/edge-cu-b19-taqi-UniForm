@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
-    if (authHeader === NULL || authHeader === undefined)
+    if (authHeader === null || authHeader === undefined)
     {
         return res.status(401).json({status: 401, message:"Unauthorized access"});
     }
@@ -11,7 +11,7 @@ const authMiddleware = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
 
     // * Verify token
-    jwt.verify(token, process.env.JWT_SECRET, (err, use) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
             return res.status(401).json({
                 status: 401,
@@ -19,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
             })
 
         }
-        req.user = student;
+        req.user = user;
         next();
     })
 } 

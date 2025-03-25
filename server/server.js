@@ -1,13 +1,15 @@
 import "dotenv/config";
 import express from "express";
 const app = express()
+
+import fileUpload from "express-fileupload";
 const PORT = process.env.PORT || 5000
 // Wafi509
 
 // * Middlewares
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+app.use(express.urlencoded({ extended: false }));
+app.use(fileUpload());
 
 app.get("/", (req, res) => {
     return res.json({ message: "Hello, it's working..." });
