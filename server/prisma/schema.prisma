@@ -19,7 +19,72 @@ model Student {
   address   String?  @db.VarChar(300)
   role      String   @default("STUDENT") // Ensure role exists
   dob       DateTime
+  profile   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+
+  forms              Form[]
+  AppliedInstitution AppliedInstitution[]
+}
+
+model Form {
+  formId    String @id @default(uuid())
+  studentId String @unique
+  board     String
+  reg       Int    @unique
+  hscRoll   Int    @unique
+  sscRoll   Int    @unique
+  hscGPA    Float
+  sscGPA    Float
+
+  student Student @relation(fields: [studentId], references: [studentId])
+}
+
+model Admin {
+  adminId   String   @id @default(uuid())
+  email     String   @unique
+  password  String   @db.VarChar(255)
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Institution {
+  institutionId      String @id @default(uuid())
+  name               String
+  requirementsHscGPA Float
+  requirementsSscGPA Float
+
+  institutionForms                         InstitutionForm[]
+  AppliedInstitution                       AppliedInstitution[]
+  InstitutionCategory                      InstitutionCategory? @relation(fields: [institutionCategoryInstitutionCategoryId], references: [institutionCategoryId])
+  institutionCategoryInstitutionCategoryId String?               @db.VarChar(255) // Foreign key to InstitutionCategory
+}
+
+model InstitutionCategory {
+  institutionCategoryId String @id @default(uuid())
+  name                  String
+  description           String
+
+  institutions Institution[]
+}
+
+model InstitutionForm {
+  institutionFormId String  @id @default(uuid())
+  institutionId     String
+  fieldName         String
+  fieldType         String // e.g., "text", "number", "file"
+  isRequired        Boolean @default(true)
+
+  institution Institution @relation(fields: [institutionId], references: [institutionId])
+}
+
+model AppliedInstitution {
+  id            String @id @default(uuid())
+  studentId     String
+  institutionId String
+
+  student     Student     @relation(fields: [studentId], references: [studentId])
+  institution Institution @relation(fields: [institutionId], references: [institutionId])
 }
