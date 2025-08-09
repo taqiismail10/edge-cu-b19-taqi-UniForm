@@ -22,3 +22,9 @@ export const loginSchema = vine.object({
     role: vine.enum(["STUDENT", "ADMIN", "UNIVERSITY_ADMIN"]),
     
 });
+
+export const adminLoginSchema = vine.object({
+    email: vine.string().email(),
+    password: vine.string(),
+    role: vine.enum(["ADMIN"]), // This is causing the issue
+});
